@@ -1,8 +1,7 @@
-import React from 'react';
+import { React, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { posts } from './data/posts';
 
-function BlogDetail () {
+function BlogDetail ({article}) {
   const formatDateHyphen = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -18,8 +17,6 @@ function BlogDetail () {
     return `${year}/${month}/${day}`;
   }
 
-  const {id} = useParams();
-  const article = posts.find(post=>post.id === parseInt(id));
   if(!article){
     return <div>記事が見つかりませんでした。</div>
   }
@@ -44,9 +41,31 @@ function BlogDetail () {
 }
 
 export default function BlogDetailShow () {
+  const {id} = useParams();
+  const [article, setArticle] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const fetcher = async () => {
+        try{
+          const res = await fetch(`https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts/${id}`);
+          const data = await res.json();
+          setArticle(data.post);
+        } catch (error) {
+          console.error('記事の取得中にエラーが発生しました:', error);
+        } finally {
+          setIsLoading(false);
+        }
+    };
+    fetcher();
+  },[id]);
+
+  if (isLoading) {
+    return <p>読み込み中です...</p>
+  }
+
   return (
     <div className='mt-10 mx-auto w-[50rem] px-4'>
-      <BlogDetail />
+      <BlogDetail article={article}/>
     </div>
   );
 }

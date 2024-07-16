@@ -1,7 +1,7 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {posts} from './data/posts';
 
-function Blog() {
+function Blog({posts}) {
   const formatDateHyphen = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -16,6 +16,7 @@ function Blog() {
     const day = date.getDate();
     return `${year}/${month}/${day}`;
   }
+
   return (
     <>
       {posts.map((post)=>{
@@ -43,10 +44,32 @@ function Blog() {
 }
 
 export default function BlogList() {
+  const [posts,setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetcher = async () => {
+      try{
+        const res = await fetch('https://1hmfpsvto6.execute-api.ap-northeast-1.amazonaws.com/dev/posts');
+        const data = await res.json();
+        setPosts(data.posts);
+      } catch (error) {
+        console.error('記事の読み込み中にエラーが発生しました:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetcher();
+  },[]);
+
+  if (isLoading) {
+    return <p>読み込み中です...</p>
+  }
+
     return (
       <div className='container mx-auto w-[48rem] px-4 mt-10'>
         <ul>
-          <Blog />
+          <Blog posts={posts}/>
         </ul>
       </div>
     );
