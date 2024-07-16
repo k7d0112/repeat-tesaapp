@@ -6,7 +6,7 @@ export default function Header (){
         <h1>
           <Link to='/' className='font-sans text-white font-bold'>Blog</Link>
         </h1>
-        <a href='' className='font-sans text-white font-bold'>お問い合わせ</a>
+        <Link to='/Contact' className='font-sans text-white font-bold'>お問い合わせ</Link>
       </header>
     );
 }
