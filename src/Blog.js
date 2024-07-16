@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import {posts} from './data/posts';
 
 function Blog() {
@@ -20,7 +21,7 @@ function Blog() {
       {posts.map((post)=>{
         return(
           <li className='mb-8' key={post.id}>
-            <a href=''>
+            <Link to={`/BlogDetail/${post.id}`}>
               <div className='p-4 border border-solid border-[#ccc]'>
                 <div className='flex justify-between items-center'>
                   <time className='text-[#ccc] text-xs' dateTime={formatDateHyphen(post.createdAt)}>{formatDateSlash(post.createdAt)}</time>
@@ -33,7 +34,7 @@ function Blog() {
                     {post.content}
                 </p>
               </div>
-            </a>
+            </Link>
           </li>
         );
       })}
